@@ -32,9 +32,6 @@ _run() {
   local name="$container_name"
   local cmd=""
 
-  [ -f "${current_dir}/smb.conf" ] \
-    && local volume="-v ${current_dir}/smb.conf:/etc/samba/smb.conf:ro"
-
   [ "x$1" == "xdebug" ] && _run_debug
 
   sudo docker run $mode $port \
@@ -42,8 +39,10 @@ _run() {
     -e "TZ=Asia/Shanghai"     \
     -e "HOME=/home/docker"    \
     -e "User_Id=${User_Id}"   \
-    -v "${current_dir}/data:/data" \
-    -v "${current_dir}/logs:/var/log/samba/" \
+    -v "${current_dir}/apollo:/home/samba/apollo" \
+    -v "${current_dir}/logs:/var/log/samba/"      \
+    -v "${current_dir}/lib/db:/var/lib/samba:rw"  \
+    -v "${current_dir}/etc:/etc" \
     --name ${name} ${images}  \
     $cmd
 }
